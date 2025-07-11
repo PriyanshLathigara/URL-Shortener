@@ -4,12 +4,6 @@ A simple and secure URL shortener web application built using **Node.js**, **Exp
 
 ---
 
-## 🌐 Live Website
-
-👉 [LinkSlice](https://url-shortener-1-bk6b.onrender.com/)
-
----
-
 ## 🚀 Features
 
 - 🔐 User authentication (Signup/Login)
