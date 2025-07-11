@@ -41,20 +41,24 @@ cd URL-Shortener
 
 ### 📦 2. Install Dependencies
 
+```bash
 npm install
+```
 
 ### 🛡️ 3. Set Up Environment Variables
 
-Create a .env file in the root folder:
+- Create a .env file in the root folder:
 
-PORT=8001
-MONGO_URL=your_mongo_connection_string
-JWT_SECRET=your_secret_key
-⚠️ Do not share your .env file publicly. For team projects, create a .env.example.
+- PORT=8001
+- MONGO_URL=your_mongo_connection_string
+- JWT_SECRET=your_secret_key
+  ⚠️ Do not share your .env file publicly. For team projects, create a .env.example.
 
 ### 🔄 4. Run in Development Mode
 
+```bash
 npm run dev
+```
 
 - Now open your browser at: http://localhost:8001
 - ✅ All set! Your app is up and running locally.
