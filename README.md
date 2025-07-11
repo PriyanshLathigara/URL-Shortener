@@ -1,5 +1,3 @@
-# URL-Shortener
-
 # 🔗 URL Shortener
 
 A simple and secure URL shortener web application built using **Node.js**, **Express**, **MongoDB**, and **EJS**. It allows users to shorten long URLs, view analytics (click counts), and manage their shortened links via a user-friendly interface.
@@ -8,16 +6,7 @@ A simple and secure URL shortener web application built using **Node.js**, **Exp
 
 ## 🌐 Live Website
 
-👉 [Click here to visit the live site](https://your-live-url.com)
-
-> Replace the link above with your actual deployment URL (Render, Vercel, Railway, etc.)
-
----
-
-## 📸 Preview
-
-<!-- You can add a screenshot like this -->
-<!-- ![Home Page](./screenshots/home.png) -->
+👉 [LinkSlice](https://your-live-url.com)
 
 ---
 
@@ -49,3 +38,24 @@ A simple and secure URL shortener web application built using **Node.js**, **Exp
 git clone https://github.com/PriyanshLathigara/URL-Shortener.git
 cd URL-Shortener
 ```
+
+### 📦 2. Install Dependencies
+
+npm install
+
+### 🛡️ 3. Set Up Environment Variables
+
+Create a .env file in the root folder:
+
+PORT=8001
+MONGO_URL=your_mongo_connection_string
+JWT_SECRET=your_secret_key
+⚠️ Do not share your .env file publicly. For team projects, create a .env.example.
+
+### 🔄 4. Run in Development Mode
+
+npm run dev
+
+- Now open your browser at: http://localhost:8001
+- ✅ All set! Your app is up and running locally.
+- And All set, Done & Dusted.
