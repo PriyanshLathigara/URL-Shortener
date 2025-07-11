@@ -24,7 +24,7 @@ A simple and secure URL shortener web application built using **Node.js**, **Exp
 
 - **Backend**: Node.js, Express
 - **Frontend**: EJS, HTML, CSS
-- **Database**: MongoDB + Mongoose
+- **Database**: MongoDB
 - **Authentication**: Cookies + Custom JWT logic
 - **Dev Tools**: Nodemon, dotenv
 
