@@ -6,7 +6,7 @@ A simple and secure URL shortener web application built using **Node.js**, **Exp
 
 ## 🌐 Live Website
 
-👉 [LinkSlice](https://your-live-url.com)
+👉 [LinkSlice](https://url-shortener-1-bk6b.onrender.com/)
 
 ---
 
@@ -32,7 +32,7 @@ A simple and secure URL shortener web application built using **Node.js**, **Exp
 
 ## ⚙️ Getting Started (Local Setup)
 
-### 1. Clone the Repo
+### 🧾 1. Clone the Repo
 
 ```bash
 git clone https://github.com/PriyanshLathigara/URL-Shortener.git
@@ -49,10 +49,13 @@ npm install
 
 - Create a .env file in the root folder:
 
-- PORT=8001
-- MONGO_URL=your_mongo_connection_string
-- JWT_SECRET=your_secret_key
-  ⚠️ Do not share your .env file publicly. For team projects, create a .env.example.
+```bash
+PORT=8001
+MONGO_URL=your_mongo_connection_string
+secret=your_secret_key
+```
+
+- ⚠️ Do not share your .env file publicly. For team projects, create a .env.example.
 
 ### 🔄 4. Run in Development Mode
 
