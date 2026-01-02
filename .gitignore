@@ -175,6 +175,7 @@ coverage/
 # Deployment files (if any)
 .vercel
 .netlify
+.vercel.json
 
 # Local development files
 local/

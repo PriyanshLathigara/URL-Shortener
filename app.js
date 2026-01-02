@@ -1,10 +1,10 @@
 require("dotenv").config();
 
-// Validate required environment variables
+// Validate required environment variables (only exit in non-serverless environments)
 const requiredEnvVars = ["MONGO_URL", "secret"];
 const missingEnvVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 
-if (missingEnvVars.length > 0) {
+if (missingEnvVars.length > 0 && !process.env.VERCEL) {
   console.error("❌ Missing required environment variables:");
   missingEnvVars.forEach((varName) => console.error(`   - ${varName}`));
   console.error("\nPlease set these in your .env file before starting the server.");
@@ -78,10 +78,17 @@ app.use((err, req, res, next) => {
   res.status(500).send("Internal server error");
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Server Started at PORT: ${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
-  if (process.env.NODE_ENV !== "production") {
-    console.log(`📍 Local URL: http://localhost:${PORT}`);
-  }
-});
+// Export app for Vercel serverless functions
+// Only listen if not in serverless environment
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ Server Started at PORT: ${PORT}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`📍 Local URL: http://localhost:${PORT}`);
+    }
+  });
+}
+
+// Export for Vercel
+module.exports = app;
