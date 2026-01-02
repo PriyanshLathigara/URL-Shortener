@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-gray-100 min-h-screen flex flex-col items-center justify-center font-sans px-4"
+  >
+    <div class="w-full max-w-2xl bg-white p-8 rounded-2xl shadow-lg">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-center text-indigo-600 flex-1">
+          URL Shortener
+        </h1>
+        <a
+          href="/user/logout"
+          class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold rounded"
+        >
+          Logout
+        </a>
+      </div>
+
+      <% if (locals.error) { %>
+      <div class="mb-4 text-center bg-red-100 text-red-800 p-3 rounded">
+        <%= error %>
+      </div>
+      <% } %>
+
+      <% if (locals.success) { %>
+      <div class="mb-4 text-center bg-green-100 text-green-800 p-3 rounded">
+        <%= success %>
+      </div>
+      <% } %>
+
+      <% if (locals.info) { %>
+      <div class="mb-4 text-center bg-blue-100 text-blue-800 p-3 rounded">
+        <%= info %>
+      </div>
+      <% } %>
+
+      <% if (locals.id) { %>
+      <div class="mb-4 text-center bg-green-100 text-green-800 p-2 rounded">
+        Short URL:
+        <a
+          href="/url/<%= id %>"
+          class="underline text-blue-600"
+          id="shortUrlLink"
+        >
+          <span id="shortUrlDisplay"></span>
+        </a>
+      </div>
+      <script>
+        // Dynamically set the full URL based on current host
+        const shortId = '<%= id %>';
+        const fullUrl = window.location.origin + '/url/' + shortId;
+        document.getElementById('shortUrlLink').href = fullUrl;
+        document.getElementById('shortUrlDisplay').textContent = fullUrl;
+      </script>
+      <% } %>
+
+      <form method="POST" action="/url" class="space-y-4">
+        <label class="block text-gray-700 font-semibold"
+          >Enter Your Original URL</label
+        >
+        <input
+          type="text"
+          name="url"
+          placeholder="https://example.com"
+          required
+          class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        />
+
+        <button
+          type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 rounded"
+        >
+          Generate Short URL
+        </button>
+      </form>
+
+      <% if (locals.urls) { %>
+      <div class="mt-8">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-xl font-semibold text-gray-800">
+            All Shortened URLs
+          </h2>
+          <button
+            onclick="location.reload()"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded"
+          >
+            Refresh
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white rounded shadow text-sm text-left">
+            <thead class="bg-gray-200 text-gray-600 uppercase text-xs">
+              <tr>
+                <th class="px-4 py-2">S. No</th>
+                <th class="px-4 py-2">Short ID</th>
+                <th class="px-4 py-2">Redirect URL</th>
+                <th class="px-4 py-2">Clicks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% urls.forEach((url, index) => { %>
+              <tr class="border-b">
+                <td class="px-4 py-2"><%= index + 1 %></td>
+                <td class="px-4 py-2 text-indigo-600 font-mono">
+                  <%= url.shortId %>
+                </td>
+                <td class="px-4 py-2 text-blue-500 underline">
+                  <a href="/url/<%= url.shortId %>" target="_blank">Visit</a>
+                </td>
+                <td class="px-4 py-2"><%= url.visitHistory.length %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <script>
+      // Auto-refresh when user comes back to the tab (after clicking a link and returning)
+      let lastVisibilityChange = Date.now();
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          // Only refresh if user was away for more than 2 seconds
+          // This prevents unnecessary refreshes when just switching tabs quickly
+          const timeAway = Date.now() - lastVisibilityChange;
+          if (timeAway > 2000) {
+            location.reload();
+          }
+        } else {
+          lastVisibilityChange = Date.now();
+        }
+      });
+    </script>
+  </body>
+</html>
