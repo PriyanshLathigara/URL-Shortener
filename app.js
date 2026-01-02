@@ -2,12 +2,16 @@ require("dotenv").config();
 
 // Validate required environment variables (only exit in non-serverless environments)
 const requiredEnvVars = ["MONGO_URL", "secret"];
-const missingEnvVars = requiredEnvVars.filter((varName) => !process.env[varName]);
+const missingEnvVars = requiredEnvVars.filter(
+  (varName) => !process.env[varName]
+);
 
 if (missingEnvVars.length > 0 && !process.env.VERCEL) {
   console.error("❌ Missing required environment variables:");
   missingEnvVars.forEach((varName) => console.error(`   - ${varName}`));
-  console.error("\nPlease set these in your .env file before starting the server.");
+  console.error(
+    "\nPlease set these in your .env file before starting the server."
+  );
   process.exit(1);
 }
 
@@ -56,12 +60,18 @@ app.use(checkForAuthorization);
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
-connectToMongoDB(process.env.MONGO_URL)
-  .then(() => console.log("MongoDB Connected!!"))
-  .catch((err) => {
-    console.error("MongoDB Connection Error:", err);
-    console.error("Please make sure MongoDB is running and MONGO_URL is correct in .env file");
-  });
+// Connect to MongoDB (non-blocking for serverless)
+// Connection will be ensured on-demand in controllers
+if (process.env.MONGO_URL) {
+  connectToMongoDB(process.env.MONGO_URL)
+    .then(() => console.log("MongoDB Connected!!"))
+    .catch((err) => {
+      console.error("MongoDB Connection Error:", err);
+      console.error("Connection will be retried on first request");
+    });
+} else {
+  console.warn("⚠️  MONGO_URL not set. Database operations will fail.");
+}
 
 app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRoute);
 app.use("/user", userRoute);

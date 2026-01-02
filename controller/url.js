@@ -1,8 +1,19 @@
 const shortid = require("shortid");
 const URL = require("../models/url");
+const { ensureConnection } = require("../connect");
 
 async function handleGenerateNewShortURL(req, res) {
   try {
+    // Ensure MongoDB connection is ready (important for serverless)
+    const isConnected = await ensureConnection(process.env.MONGO_URL);
+    if (!isConnected) {
+      console.error("MongoDB connection not available");
+      return res.render("home", { 
+        urls: [],
+        error: "Database connection unavailable. Please try again." 
+      });
+    }
+
     const body = req.body;
     
     // Fetch existing URLs for rendering

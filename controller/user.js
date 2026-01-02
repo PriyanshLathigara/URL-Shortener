@@ -1,31 +1,42 @@
 const User = require("../models/user");
 const { setUser } = require("../service/auth");
 const bcrypt = require("bcrypt");
+const { ensureConnection } = require("../connect");
 
 async function handleUserSignup(req, res) {
   try {
+    // Ensure MongoDB connection is ready (important for serverless)
+    const isConnected = await ensureConnection(process.env.MONGO_URL);
+    if (!isConnected) {
+      console.error("MongoDB connection not available");
+      return res.status(503).send("Database connection unavailable. Please try again.");
+    }
+
     const { name, email, password } = req.body;
 
     // Validate input
     if (!name || !email || !password) {
-      return res.status(400).send("Name, email, and password are required");
+      return res.status(400).render("signup", { error: "Name, email, and password are required" });
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).send("Invalid email format");
+      return res.status(400).render("signup", { error: "Invalid email format" });
     }
 
     // Password validation (minimum 6 characters)
     if (password.length < 6) {
-      return res.status(400).send("Password must be at least 6 characters long");
+      return res.status(400).render("signup", { error: "Password must be at least 6 characters long" });
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    // Normalize email to lowercase for checking
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // Check if user already exists (with normalized email)
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
-      return res.status(400).send("User already exists with this email");
+      return res.status(400).render("signup", { error: "User already exists with this email" });
     }
 
     // Hash the password with salt
@@ -35,7 +46,7 @@ async function handleUserSignup(req, res) {
     // Save user with hashed password
     const user = await User.create({
       name: name.trim(),
-      email: email.trim().toLowerCase(),
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
@@ -44,17 +55,28 @@ async function handleUserSignup(req, res) {
       .status(201)
       .render("login", { success: "Signup successful. Please log in." });
   } catch (err) {
-    console.error(err);
+    console.error("Signup error:", err);
     // Handle duplicate email error
     if (err.code === 11000) {
-      return res.status(400).send("User already exists with this email");
+      return res.status(400).render("signup", { error: "User already exists with this email" });
     }
-    res.status(500).send("Internal Server Error");
+    // More detailed error for debugging
+    const errorMessage = process.env.NODE_ENV === "production" 
+      ? "Internal Server Error. Please try again." 
+      : `Error: ${err.message}`;
+    res.status(500).render("signup", { error: errorMessage });
   }
 }
 
 async function handleUserLogin(req, res) {
   try {
+    // Ensure MongoDB connection is ready (important for serverless)
+    const isConnected = await ensureConnection(process.env.MONGO_URL);
+    if (!isConnected) {
+      console.error("MongoDB connection not available");
+      return res.status(503).send("Database connection unavailable. Please try again.");
+    }
+
     const { email, password } = req.body;
 
     // Validate input
