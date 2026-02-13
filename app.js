@@ -3,14 +3,14 @@ require("dotenv").config();
 // Validate required environment variables (only exit in non-serverless environments)
 const requiredEnvVars = ["MONGO_URL", "secret"];
 const missingEnvVars = requiredEnvVars.filter(
-  (varName) => !process.env[varName]
+  (varName) => !process.env[varName],
 );
 
 if (missingEnvVars.length > 0 && !process.env.VERCEL) {
   console.error("❌ Missing required environment variables:");
   missingEnvVars.forEach((varName) => console.error(`   - ${varName}`));
   console.error(
-    "\nPlease set these in your .env file before starting the server."
+    "\nPlease set these in your .env file before starting the server.",
   );
   process.exit(1);
 }
@@ -52,7 +52,7 @@ app.use(
       sameSite: "strict", // CSRF protection
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
-  })
+  }),
 );
 
 app.use(checkForAuthorization);
